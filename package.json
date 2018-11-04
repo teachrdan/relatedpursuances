@@ -1,0 +1,20 @@
+{
+  "name": "relatedpursuances",
+  "version": "0.0.1",
+  "description": "beta view of related pursuances",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "budo index.js --live"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teachrdan/relatedpursuances.git"
+  },
+  "author": "Dan Tennery-Spalding",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/teachrdan/relatedpursuances/issues"
+  },
+  "homepage": "https://github.com/teachrdan/relatedpursuances#readme"
+}
