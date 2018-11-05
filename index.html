@@ -3,8 +3,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Beta: Single Pursuance View</title>
-	<meta name="description" content="The view of a single pursuance">
+  <title>Beta: Related Pursuances View</title>
+	<meta name="description" content="The view of multiple related pursuances">
 	<meta name="author" content="Dan Tennery-Spalding">
 </head>
 <style>
@@ -20,14 +20,8 @@ body {
 .body-text {
   line-height: 1.4em;
 }
-#bio-container {
-  display: none;
-  font-size: 18px;
-  padding-top: 20px;
-  padding-right: 90px;
-}
 #canvas {
-  float: left;
+  /* float: left; */
   display: inline-block;
   width: 55%;
 }
@@ -76,17 +70,6 @@ label {
 #portrait-container {
   padding-top: 50px;
 }
-#pursuance-detail-container {
-  display: inline-block;
-  float: left;
-  /* padding-left: 50px; */
-  width: 20%;
-}
-#user-detail-container {
-  display: inline-block;
-  height: 100vh;
-  width: 25%;
-}
 #user-name {
   padding-top: 40px;
 }
@@ -102,7 +85,7 @@ label {
 }
 </style>
 <body>
-	<h1>Beta: Single Pursuance View</h1>
+	<h1>Beta: Related Pursuances View</h1>
   <div style="font-size: 20px; opacity: 0.8;">
   </div>
   <div id="view-selection-bar">
@@ -123,32 +106,15 @@ label {
       <input type="number" id="number-spirals" class="generic-selector" value=3>
 
       <button id="multi-view">Toggle Multi-View</button>
-    </form>
-  </div>
-  <div id="view-container">
-    <div id='pursuance-detail-container'>
-      <h1>Net Neutrality for Oakland</h1>
       <div id="mode-selection-bar">
         <div id="alpha" class="mode-selector active-mode">A-Z</div>
         <div id="points" class="mode-selector center-selector">Points</div>
         <div id="admin" class="mode-selector">Admin</div>
       </div>
-      <div class="body-text">
-        <b>Location</b> Dallas, Texas, USA<br><br>
-        <b>Created</b> 1 January 2018<br><br>
-        <b>This pursuance's mission is to</b> lorem ipsum dolor amet chicharrones af occupy truffaut mlkshk succulents intelligentsia Adaptogen master cleanse helvetica raclette Neutra cred lo-fi flexitarian Cred XOXO woke tacos meditation drinking vinegar vegan put a bird on it jean shorts etsy poke man braid af master cleanse Meggings street art VHS pop-up ramps woke kinfolk Paleo air plant bespoke blog heirloom ramps coloring book selvage tbh affogato selfies single-origin coffee viral taiyaki hoodie messenger bag actually heirloom Ramps gluten-free heirloom scenester authentic messenger bag forage slow-carb meh irony pabst heirloom hammock brunch sartorial distillery seitan.
-      </div>
-    </div>
+    </form>
+  </div>
+  <div id="view-container">
     <div id='canvas'></div>
-    <div id='user-detail-container' style-"height: 100vh">
-      <div id='portrait-container'>
-        <img id='portrait' src="">
-      </div>
-      <div id='user-name'></div>
-      <div id='bio-container' class="body-text">
-        lorem ipsum dolor amet chicharrones af occupy truffaut mlkshk succulents intelligentsia Adaptogen master cleanse helvetica raclette Neutra cred lo-fi flexitarian Cred XOXO woke tacos meditation drinking vinegar vegan put a bird on it jean shorts etsy poke man braid af master cleanse Meggings street art VHS pop-up ramps woke kinfolk Paleo air plant bespoke blog heirloom ramps coloring book selvage tbh affogato selfies single-origin coffee viral taiyaki hoodie messenger bag actually heirloom Ramps gluten-free heirloom scenester authentic messenger bag forage slow-carb meh irony pabst heirloom hammock brunch sartorial distillery seitan.
-      </div>
-    </div>
   </div>
   <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
   <!-- NOTE this is for offline use -->
