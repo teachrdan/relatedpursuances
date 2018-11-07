@@ -20,11 +20,6 @@ body {
 .body-text {
   line-height: 1.4em;
 }
-#canvas {
-  /* float: left; */
-  display: inline-block;
-  width: 55%;
-}
 .center-selector {
   border-left: 1px solid #A9A9A9;
   border-right: 1px solid #A9A9A9;
@@ -106,15 +101,14 @@ label {
       <input type="number" id="number-spirals" class="generic-selector" value=3>
 
       <button id="multi-view">Toggle Multi-View</button>
-      <div id="mode-selection-bar">
-        <div id="alpha" class="mode-selector active-mode">A-Z</div>
-        <div id="points" class="mode-selector center-selector">Points</div>
-        <div id="admin" class="mode-selector">Admin</div>
-      </div>
     </form>
   </div>
+  <div id="mode-selection-bar">
+    <div id="alpha" class="mode-selector active-mode">A-Z</div>
+    <div id="points" class="mode-selector center-selector">Points</div>
+    <div id="admin" class="mode-selector">Admin</div>
+  </div>
   <div id="view-container">
-    <div id='canvas'></div>
   </div>
   <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
   <!-- NOTE this is for offline use -->
