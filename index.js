@@ -64,14 +64,17 @@ const draw = function (num, total) {
       .delay(250)
       .attr('transform', `translate(${width / 2}, ${height / 2}) scale(0.5)`)
   } else {
+    const radius = height / 2.5
+    const middleX = width / 2
+    const middleY = height / 2
     if (num === 1) {
-      translate = `${width / 2}, ${height / 10}`
+      translate = `${middleX}, ${middleY - radius}`
     } else if (num === 2) {
-      translate = `${width / 2}, ${height * 9 / 10}`
+      translate = `${middleX}, ${middleY + radius}`
     } else if (num === 3) {
-      translate = `${width / 8}, ${height / 2}`
+      translate = `${middleX - radius}, ${middleY}`
     } else if (num === 4) {
-      translate = `${width * 7 / 8}, ${height / 2}`
+      translate = `${middleX + radius}, ${middleY}`
     }
     pursuanceContainer
       .transition()
