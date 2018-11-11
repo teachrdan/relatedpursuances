@@ -1,14 +1,11 @@
 /* global d3 */
 window.d3 = d3
-// magic numbers
-// const height = 750 // pixels
-console.log("d3.select('#view-container').node().getBoundingClientRect()", d3.select('#view-container').node().getBoundingClientRect())
-
 const height = d3.select('#view-container').node().getBoundingClientRect().height
 const width = d3.select('#view-container').node().getBoundingClientRect().width
 const start = 0
 const end = 2.25
 let mode = 'admin' // NOTE: hardcoded
+const chanceRelated = 0.25
 
 let numPursuances = parseInt(document.getElementById('num-pursuances').value)
 
@@ -36,12 +33,17 @@ const drawPursuances = function () {
 }
 // TODO change 'num' to 'index'
 const draw = function (num, total) {
+  const mainPursuance = (num === 0)
   const delay = 500
-  const opacity = (num === 0) ? 1 : 0
   num = (num > 5) ? num = 5 : num
-  const className = (num === 0) ? '' : `pursuance-${num}`
-  let numSpirals = parseInt(document.getElementById('number-spirals').value)
-  let lineDistance = parseInt(document.getElementById('distance-between-lines').value)
+  // TODO use this
+  const className = `pursuance-${num}`
+
+  let numUsers = (mainPursuance) ? 30 : Math.random() * 30
+  numUsers = (numUsers > 10) ? numUsers : 10
+
+  let numSpirals = numUsers / 9
+  let lineDistance = 6
 
   const theta = (r) => numSpirals * Math.PI * r
   let r = (d3.min([width, height]) / 2 + lineDistance * 10) / 2
@@ -59,17 +61,18 @@ const draw = function (num, total) {
   let pursuanceContainer = svg.append('g')
     .attr('id', 'pursuance-container')
     .attr('transform', `translate(${width / 2}, ${height / 2}) scale(${startingScale})`)
+    .attr('opacity', (mainPursuance) ? 1 : 0)
 
   // TODO make this DRY
   let translate = ''
   const middleX = width / 2
   const middleY = height / 2 - 25 // cheating by 25px
-  const radius = height / 4
-  if (num === 0) {
+  const radius = Math.min(height, width) / 5
+  if (mainPursuance) {
     pursuanceContainer
       .transition()
-      .delay(250)
-      .attr('transform', `translate(${middleX}, ${middleY}) scale(0.35)`)
+      .delay(delay)
+      .attr('transform', `translate(${middleX}, ${middleY}) scale(0.5)`)
   } else {
     if (num === 1) {
       translate = `${middleX}, ${middleY - radius - r / 2}`
@@ -84,29 +87,24 @@ const draw = function (num, total) {
       .transition()
       .delay(delay)
       .attr('transform', `translate(${translate}) scale(0.35)`)
+      .attr('opacity', 1)
   }
 
   let path = pursuanceContainer.append('path')
     .datum(points)
     .attr('id', 'spiral')
     .attr('class', className)
-    .attr('opacity', opacity)
+    .attr('opacity', 1)
     .attr('d', spiral)
     .style('fill', 'none')
     .style('stroke', 'steelblue')
-    .transition()
-    .delay(delay * 0.9)
-    .attr('opacity', 1)
 
-  let numUsers = parseInt(document.getElementById('num-users').value)
-  numUsers = (numUsers > 60) ? 60 : numUsers
   let shownUsers = []
   if (mode === 'points') {
     shownUsers = users.filter((user, idx) => idx < numUsers).sort((a, b) => (a.pointsDone < b.pointsDone) ? -1 : 1)
   } else if (mode === 'admin') {
     shownUsers = users.filter((user, idx) => idx < numUsers).sort((a, b) => (a.isAdmin) ? -1 : 1)
   } else {
-    // NOTE: default sort order is alphabetical
     shownUsers = users.filter((user, idx) => idx < numUsers).sort((a, b) => (a.firstName < b.firstName) ? -1 : 1)
   }
 
@@ -118,20 +116,19 @@ const draw = function (num, total) {
     const posOnLine = path.node().getPointAtLength(distAlongSpiral)
     const user = shownUsers[i]
     user.fill = user.isAdmin ? 'red' : 'steelblue'
-    let nodeRadius = parseInt(document.getElementById('user-radius').value)
+    let nodeRadius = 25
 
+    const isRelated = (mainPursuance || Math.random() < chanceRelated)
     pursuanceContainer.append('circle')
       .attr('class', `node ${className}`)
       .attr('id', 'user' + user.id)
       .attr('cx', posOnLine.x)
       .attr('cy', posOnLine.y)
-      .attr('fill', user.fill)
+      .attr('fill', isRelated ? user.fill : 'white')
       .attr('r', nodeRadius)
-      .attr('opacity', opacity)
+      .attr('stroke', 'black')
+      .attr('stroke-width', (!isRelated) ? 1 : 0)
       .datum({ user: user })
-      .transition()
-      .delay(delay * 0.9)
-      .attr('opacity', 1)
 
     let label = (mode === 'points') ? user.pointsTodo + '' : (mode === 'admin') ? '' : user.firstName.substring(0, 1)
     label = (mode !== 'admin') ? label : (user.isAdmin) ? 'Admin' : 'User'
@@ -142,9 +139,11 @@ const draw = function (num, total) {
     }
     let labelX = numberX - label.length * 3 - 2
 
+    // text on the node circles
     pursuanceContainer.append('text')
       .attr('font-family', 'monospace')
       .attr('class', 'user-text')
+      .attr('opacity', () => (mainPursuance) ? 1 : 0)
       .text(label)
       .attr('fill', 'white')
       .attr('x', labelX)
@@ -153,27 +152,31 @@ const draw = function (num, total) {
       .style('font-size', fontSize)
 
     // show the name of each user
-    pursuanceContainer.append('text')
-      .attr('class', 'user-text')
-      .attr('opacity', opacity)
-      .text(user.firstName)
-      .attr('fill', user.daysOld < 25 ? '#3c963c' : '#828282')
-      .attr('x', numberX - nodeRadius)
-      .attr('y', posOnLine.y + nodeRadius + 16)
-      .transition()
-      .delay(delay * 0.9)
-      .attr('opacity', 1)
+    // pursuanceContainer.append('text')
+    //   .attr('class', 'user-text')
+    //   .attr('opacity', () => (mainPursuance) ? 1 : 0)
+    //   .text(user.firstName)
+    //   .attr('fill', user.daysOld < 25 ? '#3c963c' : '#828282')
+    //   .attr('x', numberX - nodeRadius)
+    //   .attr('y', posOnLine.y + nodeRadius + 16)
 
+    // pursuanceContainer.append('text')
+    //   .attr('class', 'user-text')
+    //   .attr('opacity', () => (mainPursuance) ? 1 : 0)
+    //   .text(user.lastName)
+    //   .attr('fill', user.daysOld < 25 ? '#3c963c' : '#828282')
+    //   .attr('x', numberX - nodeRadius)
+    //   .attr('y', posOnLine.y + nodeRadius + 32)
+
+    // TODO align text to anything
+    // TODO make font weight lighter
     pursuanceContainer.append('text')
-      .attr('class', 'user-text')
-      .attr('opacity', opacity)
-      .text(user.lastName)
-      .attr('fill', user.daysOld < 25 ? '#3c963c' : '#828282')
-      .attr('x', numberX - nodeRadius)
-      .attr('y', posOnLine.y + nodeRadius + 32)
-      .transition()
-      .delay(delay * 0.9)
-      .attr('opacity', 1)
+      .text('Pursuance Name')
+      .attr('font-family', 'sans-serif')
+      .attr('font-weight', 200)
+      .attr('x', -r / 2)
+      .attr('y', r + 40)
+      .attr('font-size', 40)
   }
 }
 
