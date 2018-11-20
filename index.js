@@ -2,7 +2,6 @@
 window.d3 = d3
 const bodyHeight = d3.select('#input-container').node().getBoundingClientRect().height
 const bodyWidth = d3.select('#container').node().getBoundingClientRect().width
-console.log('bodyHeight, bodyWidth', bodyHeight, bodyWidth)
 
 const start = 0
 const end = 2.25
@@ -39,6 +38,12 @@ d3.select('#arrow-down')
     drawPursuances()
   })
 
+d3.select('#refresh')
+  .on('click', () => {
+    numPursuances = 3
+    drawPursuances()
+  })
+
 // append the svg object to the page
 let svg = d3.select('#view-container').append('svg:svg')
   .attr('height', height)
@@ -50,6 +55,7 @@ svg.append('circle')
   .attr('id', 'guide-circle')
   .attr('cx', width / 2)
   .attr('cy', width / 2)
+  .attr('opacity', 0.25)
   .attr('r', guideCircleRadius) // magic number
   .attr('fill', 'none')
   .attr('stroke', 'black')
@@ -82,10 +88,11 @@ const draw = function (num, total) {
   let lineDistance = 6
 
   const theta = (r) => numSpirals * Math.PI * r
-  let r = (d3.min([width, height]) / 2 + lineDistance * 10) / 2
+  // TODO delete this?
+  // let r = (d3.min([width, height]) / 2 + lineDistance * 10) / 2
   let pursuanceRadius = d3.scaleLinear()
     .domain([start, end])
-    .range([10, r])
+    .range([10, guideCircleRadius])
 
   const points = d3.range(start, end + 0.001, (end - start) / 1000)
   let spiral = d3.radialLine()
@@ -98,6 +105,13 @@ const draw = function (num, total) {
     .attr('id', 'pursuance-container')
     .attr('transform', `translate(${width / 2}, ${height / 2}) scale(${startingScale})`)
     .attr('opacity', (mainPursuance) ? 1 : 0)
+
+  pursuanceContainer.append('circle')
+    .attr('class', 'pursuance-halo')
+    .attr('cx', width / 2)
+    .attr('cy', width / 2)
+    .attr('opacity', 0.25)
+    // .attr('r', pursuanceRadius)
 
   // TODO make this DRY
   let translate = ''
@@ -112,7 +126,6 @@ const draw = function (num, total) {
     // circumfrence * pursuanceNumber / total
     const distance = Math.PI * (2 * guideCircleRadius) * num / total
     const coordinates = document.getElementById('guide-circle').getPointAtLength(distance)
-    console.log('num, total, distance, coordinates', num, total, distance, coordinates)
 
     translate = `${coordinates.x}, ${coordinates.y}`
     pursuanceContainer
@@ -148,7 +161,7 @@ const draw = function (num, total) {
     const posOnLine = path.node().getPointAtLength(distAlongSpiral)
     const user = shownUsers[i]
     user.fill = user.isAdmin ? 'red' : 'steelblue'
-    let nodeRadius = 25
+    let nodeRadius = (mainPursuance) ? 25 : 20
 
     const isRelated = (mainPursuance || Math.random() < chanceRelated)
     pursuanceContainer.append('circle')
