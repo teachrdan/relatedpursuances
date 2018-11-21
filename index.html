@@ -15,8 +15,26 @@
         <div id="refresh"></div>
         <div id="arrow-down" class="arrow"></div>
       </div>
+      <!-- Add text box here -->
+      <div id="pursuance-text-container">
+        <div id="main-pursuance-text-box" class="pursuance-text-box">
+          <h1 class="pursuance-header">The Free Insulin Project</h1>
+          <p class="pursuance-text">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+            aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+            occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          </p>
+        </div>
+        <div id="related-pursuance-text-box" class="pursuance-text-box">
+          <h1 class="pursuance-header">Oakland Biohackers</h1>
+          <p class="pursuance-text">
+            Relationship: xx
+
+          </p>
+        </div>
+      </div>
     </div>
-    <!-- Add text box here -->
     <div id="view-container" style="height: 100vh; float: right">
     </div>
   </div>
@@ -76,6 +94,9 @@
     width: 40px;
     border: none;
   }
+  #input-container {
+    width: 20%;
+  }
   label {
     font-size: 16px;
     font-family: helvetica;
@@ -100,6 +121,12 @@
   .orbit-density {
     margin-right: 5px;
   }
+  #pursuance-text-container {
+    margin-top: 50px;
+    margin-right: 25px;
+  }
+  .pursuance-header {
+  }
   #refresh {
     box-sizing: border-box;
     height: 4vw;
@@ -110,6 +137,9 @@
   }
   #refresh:hover {
     border-width: 8px;
+  }
+  #related-pursuance-text-box {
+    display: none;
   }
   #user-name {
     padding-top: 40px;
