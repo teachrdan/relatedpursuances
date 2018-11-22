@@ -8,16 +8,16 @@ let mode = 'admin' // NOTE: hardcoded
 // magic numbers
 const chanceRelated = 0.25
 const end = 2.25
+const haloMultiplier = 1.1
 let maxPursuances = 12
 let numPursuances = 3 // starting number of pursuances
 const start = 0
-const startingScale = 1
 
 // sets pursuance view to a square
 // assumes width is greater than height
 let height = bodyHeight
-let width = bodyHeight
 let leftColumnWidth = bodyWidth - bodyHeight - 100 // cheating by 100px
+let width = bodyHeight
 d3.select('#input-container')
   .style('width', leftColumnWidth - 100 + 'px')
 d3.select('#view-container')
@@ -53,7 +53,6 @@ let svg = d3.select('#view-container').append('svg:svg')
   .attr('width', width)
 
 // draw invisible circles to guide related pursuances
-// TODO make this DRY
 const middleX = width / 2
 const middleY = height / 2 - 25 // cheating by 25px
 const outerGuideCircleRadius = width
@@ -75,16 +74,8 @@ svg.append('circle')
   .attr('stroke', 'black')
   .style('stroke-width', 0.25)
 
-const clearPursuances = function () {
-  d3.selectAll('.event-catcher').remove()
-  d3.selectAll('#spiral').remove()
-  d3.selectAll('.node').remove()
-  d3.selectAll('.user-text').remove()
-  d3.selectAll('.orbit').remove()
-}
-
 const drawPursuances = function () {
-  clearPursuances()
+  d3.selectAll('.removable').remove()
   for (let i = 0; i < numPursuances; i++) {
     draw(i, numPursuances - 1)
   }
@@ -98,12 +89,11 @@ const draw = function (num, total) {
   // magic numbers
   const delay = 100
   const duration = 500
+  const maxUsers = 30
 
-  let numUsers = (mainPursuance) ? 30 : Math.random() * 30
+  let numUsers = (mainPursuance) ? maxUsers : Math.random() * maxUsers
   numUsers = (numUsers > 10) ? numUsers : 10
-
   let numSpirals = numUsers / 9
-  let lineDistance = 6
 
   const theta = (r) => numSpirals * Math.PI * r
   let pursuanceRadius = d3.scaleLinear()
@@ -131,23 +121,16 @@ const draw = function (num, total) {
     .attr('id', (mainPursuance) ? 'main-pursuance-container' : 'related-pursuance-container')
     .attr('transform', `translate(${translate})`)
 
-  // TODO use this
-  pursuanceContainer.append('circle')
-    .attr('class', 'pursuance-halo')
-    .attr('cx', width / 2)
-    .attr('cy', width / 2)
-    .attr('opacity', 0.25)
-    // .attr('r', pursuanceRadius)
-
-  const makeEventCatcher = function (options) {
+  const makeHaloAndEventCatcher = function (options) {
     const { x, y, radius, idName } = options
     svg.append('circle')
       .attr('id', idName)
-      .attr('class', 'event-catcher')
+      .attr('class', 'event-catcher pursuance-halo removable')
       .attr('cx', x)
       .attr('cy', y)
-      .attr('r', radius)
+      .attr('fill', 'yellow')
       .attr('opacity', 0)
+      .attr('r', radius * haloMultiplier)
   }
 
   let radius = 0
@@ -160,7 +143,7 @@ const draw = function (num, total) {
       .attr('transform', `translate(${middleX}, ${middleY}) scale(0.5)`)
 
     radius = innerGuideCircleRadius / 1.9
-    makeEventCatcher({ x: middleX, y: middleY, radius, idName: 'main-pursuance-event-catcher' })
+    makeHaloAndEventCatcher({ x: middleX, y: middleY, radius, idName: 'main-pursuance-event-catcher' })
   } else {
     // calculate an even distance between pursuances
     const distance = Math.PI * (2 * innerGuideCircleRadius) * num / total
@@ -173,13 +156,13 @@ const draw = function (num, total) {
       .attr('transform', `translate(${x}, ${y}) scale(0.3)`)
       .attr('opacity', 1)
     radius = innerGuideCircleRadius * 0.3
-    makeEventCatcher({ x, y, radius: radius, idName: 'related-pursuance-event-catcher' })
+    makeHaloAndEventCatcher({ x, y, radius: radius, idName: 'related-pursuance-event-catcher' })
   }
 
   let path = pursuanceContainer.append('path')
     .datum(points)
     .attr('id', 'spiral')
-    .attr('class', className)
+    .attr('class', `${className} removable`)
     .attr('opacity', 1)
     .attr('d', spiral)
     .style('fill', 'none')
@@ -206,7 +189,7 @@ const draw = function (num, total) {
 
     const isRelated = (mainPursuance || Math.random() < chanceRelated)
     pursuanceContainer.append('circle')
-      .attr('class', `node ${className}`)
+      .attr('class', `node ${className} removable`)
       .attr('id', 'user' + user.id)
       .attr('cx', posOnLine.x)
       .attr('cy', posOnLine.y)
@@ -228,7 +211,7 @@ const draw = function (num, total) {
     // text on the node circles
     pursuanceContainer.append('text')
       .attr('font-family', 'monospace')
-      .attr('class', 'user-text')
+      .attr('class', 'user-text removable')
       .attr('opacity', () => (mainPursuance) ? 1 : 0)
       .text(label)
       .attr('fill', 'white')
@@ -277,6 +260,7 @@ const attachListeners = function () {
   // change text depending on which pursuance is hovered over
   d3.select('#main-pursuance-event-catcher')
     .on('mouseenter', function () {
+      d3.select(this).attr('opacity', 0.25)
       d3.select('#main-pursuance-text-box')
         .style('display', 'inline-block')
       d3.select('#related-pursuance-text-box')
@@ -284,38 +268,26 @@ const attachListeners = function () {
     })
   d3.select('#main-pursuance-event-catcher')
     .on('mouseout', function () {
+      d3.select(this).attr('opacity', 0)
       d3.select('#main-pursuance-text-box')
         .style('display', 'none')
     })
 
   d3.selectAll('#related-pursuance-event-catcher')
     .on('mouseenter', function () {
+      d3.select(this).attr('opacity', 0.25)
       d3.select('#main-pursuance-text-box')
         .style('display', 'none')
       d3.select('#related-pursuance-text-box')
         .style('display', 'inline-block')
     })
     .on('mouseout', function () {
+      d3.select(this).attr('opacity', 0)
       d3.select('#related-pursuance-text-box')
         .style('display', 'none')
     })
 
   const allNodes = d3.selectAll('.node')
-  allNodes
-    .on('click', (d) => {
-      const isClicked = d3.select('#user' + d.user.id).attr('class').includes('clicked')
-      // if this node wasn't clicked already
-      if (!isClicked) {
-        highlightNode(d.user.id)
-        d3.select('#user' + d.user.id).attr('class', 'node clicked')
-      } else {
-        // if it (or anything else) was clicked, unclick it
-        d3.selectAll('.clicked').attr('class', 'node')
-      }
-    })
-
-  // add a class for full or empty as a bootleg store
-  // toggle based on that value
   allNodes
     .on('mouseenter', (d, i) => {
       // TODO make node bigger, too
@@ -333,12 +305,6 @@ const attachListeners = function () {
         d3.select('#user-name').text('')
         d3.select('#user' + d.user.id).attr('fill', d.user.fill)
       }
-    })
-
-  d3.selectAll('.generic-selector')
-    .on('input', () => {
-      drawPursuances()
-      attachListeners()
     })
 }
 
