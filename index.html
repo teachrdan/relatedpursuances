@@ -40,7 +40,8 @@
         </div>
       </div>
     </div>
-    <div id="view-container" style="height: 100vh; float: right">
+    <div id="view-container">
+      <div id="legend"></div>
     </div>
   </div>
   <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
@@ -88,6 +89,15 @@
     font-size: 16px;
     font-family: helvetica;
   }
+  #legend {
+    bottom: 25px;
+    right: 25px;
+    position: absolute;
+  }
+  #legend-svg {
+    stroke: 'gray';
+    stroke-width: 1;
+  }
   .node circle {
     fill: #fff;
     stroke-width: 3px;
@@ -114,6 +124,8 @@
   }
   #view-container {
     height: 100vh;
+    float: right;
+    position: relative;
   }
 </style>
 </html>

@@ -8,7 +8,6 @@ let mode = 'admin' // NOTE: hardcoded
 // magic numbers
 const chanceRelated = 0.25
 const end = 2.25
-const haloMultiplier = 1.2
 let maxPursuances = 12
 let numPursuances = 3 // starting number of pursuances
 const start = 0
@@ -46,6 +45,82 @@ d3.select('#refresh-pursuances')
     numPursuances = 3
     drawPursuances()
   })
+
+// legend
+// magic numbers
+const legendHeight = 100
+const legendWidth = 315
+const nodeRadius = 10
+let legendY = 22
+let legendX = 15
+
+const legendSVG = d3.select('#legend').append('svg')
+  .attr('id', 'legend-svg')
+  .attr('height', legendHeight)
+  .attr('width', legendWidth)
+  .attr('transform', 'scale(0.75)')
+
+// set border around svg
+legendSVG.append('rect')
+  .attr('x', 0)
+  .attr('y', 0)
+  .attr('width', legendWidth)
+  .attr('height', legendHeight)
+  .attr('fill', 'none')
+  .attr('stroke', 'gray')
+  .attr('stroke-width', 1)
+
+// admin circle and text
+legendSVG.append('circle')
+  .attr('id', 'legend-admin')
+  .attr('cx', legendX)
+  .attr('cy', legendY)
+  .attr('fill', 'red')
+  .attr('r', nodeRadius)
+
+legendY += 7
+legendX += 15
+legendSVG.append('text')
+  .attr('class', 'legend-text')
+  .attr('x', 30)
+  .attr('y', legendY)
+  .text('Admin')
+
+// user circle and text
+legendY += 20
+legendX = 15
+legendSVG.append('circle')
+  .attr('id', 'legend-user')
+  .attr('cx', legendX)
+  .attr('cy', legendY)
+  .attr('fill', 'steelblue')
+  .attr('r', nodeRadius)
+
+legendY += 7
+legendX += 15
+legendSVG.append('text')
+  .attr('class', 'legend-text')
+  .attr('x', 30)
+  .attr('y', legendY)
+  .text('User')
+
+// no connection circle and text
+legendY += 20
+legendX = 15
+legendSVG.append('circle')
+  .attr('id', 'legend-no-connection')
+  .attr('cx', legendX)
+  .attr('cy', legendY)
+  .attr('fill', 'white')
+  .attr('r', nodeRadius)
+
+legendY += 7
+legendX += 15
+legendSVG.append('text')
+  .attr('class', 'legend-text')
+  .attr('x', 30)
+  .attr('y', legendY)
+  .text('No connection to any pursuance users')
 
 // append the svg object to the page
 let svg = d3.select('#view-container').append('svg:svg')
@@ -89,6 +164,7 @@ const draw = function (num, total) {
   // magic numbers
   const delay = 100
   const duration = 500
+  const haloMultiplier = (mainPursuance) ? 1.1 : 1.2
   const maxUsers = 30
 
   let numUsers = (mainPursuance) ? maxUsers : Math.random() * maxUsers
