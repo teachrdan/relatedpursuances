@@ -8,7 +8,7 @@ let mode = 'admin' // NOTE: hardcoded
 // magic numbers
 const chanceRelated = 0.25
 const end = 2.25
-const haloMultiplier = 1.1
+const haloMultiplier = 1.2
 let maxPursuances = 12
 let numPursuances = 3 // starting number of pursuances
 const start = 0
@@ -63,14 +63,14 @@ svg.append('circle')
   .attr('fill', 'none')
   .attr('r', outerGuideCircleRadius) // magic number
 
-const innerGuideCircleRadius = width / 2.75
+const innerGuideCircleRadius = width / 2.75 // magic number
 svg.append('circle')
   .attr('cx', middleX)
   .attr('cy', middleY)
   .attr('fill', 'none')
   .attr('id', 'inner-guide-circle')
   .attr('opacity', 0.25)
-  .attr('r', innerGuideCircleRadius) // magic number
+  .attr('r', innerGuideCircleRadius)
   .attr('stroke', 'black')
   .style('stroke-width', 0.25)
 
@@ -95,10 +95,12 @@ const draw = function (num, total) {
   numUsers = (numUsers > 10) ? numUsers : 10
   let numSpirals = numUsers / 9
 
+  // makes the radius of pursuances w/fewer users smaller
+  const workingRadius = innerGuideCircleRadius * numUsers / maxUsers
   const theta = (r) => numSpirals * Math.PI * r
   let pursuanceRadius = d3.scaleLinear()
-    .domain([start, end])
-    .range([10, innerGuideCircleRadius])
+    .domain([start, end]) // number of turns of the spiral
+    .range([10, workingRadius]) // innermost and outermost radii of the spiral
 
   const points = d3.range(start, end + 0.001, (end - start) / 1000)
   let spiral = d3.radialLine()
@@ -142,7 +144,7 @@ const draw = function (num, total) {
       .ease(d3.easeCubicOut)
       .attr('transform', `translate(${middleX}, ${middleY}) scale(0.5)`)
 
-    radius = innerGuideCircleRadius / 1.9
+    radius = workingRadius / 1.9
     makeHaloAndEventCatcher({ x: middleX, y: middleY, radius, idName: 'main-pursuance-event-catcher' })
   } else {
     // calculate an even distance between pursuances
@@ -155,7 +157,7 @@ const draw = function (num, total) {
       .ease(d3.easeCubicOut)
       .attr('transform', `translate(${x}, ${y}) scale(0.3)`)
       .attr('opacity', 1)
-    radius = innerGuideCircleRadius * 0.3
+    radius = workingRadius * 0.3
     makeHaloAndEventCatcher({ x, y, radius: radius, idName: 'related-pursuance-event-catcher' })
   }
 
