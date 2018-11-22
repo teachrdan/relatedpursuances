@@ -282,6 +282,11 @@ const attachListeners = function () {
       d3.select('#related-pursuance-text-box')
         .style('display', 'none')
     })
+  d3.select('#main-pursuance-event-catcher')
+    .on('mouseout', function () {
+      d3.select('#main-pursuance-text-box')
+        .style('display', 'none')
+    })
 
   d3.selectAll('#related-pursuance-event-catcher')
     .on('mouseenter', function () {
@@ -293,8 +298,6 @@ const attachListeners = function () {
     .on('mouseout', function () {
       d3.select('#related-pursuance-text-box')
         .style('display', 'none')
-      d3.select('#main-pursuance-text-box')
-        .style('display', 'inline-block')
     })
 
   const allNodes = d3.selectAll('.node')
