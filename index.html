@@ -5,19 +5,20 @@
   <meta charset="utf-8">
   <title>Beta: Related Pursuances View</title>
 	<meta name="description" content="The view of multiple related pursuances">
-	<meta name="author" content="Dan Tennery-Spalding">
+  <meta name="author" content="Dan Tennery-Spalding">
+<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed" rel="stylesheet">
 </head>
 <body>
   <div id="container" style="width: 100%; height: 100vh;">
     <div id="input-container" style="height: 100vh; float: left;">
       <div id="adjust-pursuances-container">
-        <span id="subtract-pursuance" class="adjust-pursuances">Less</span>
-        <span id="refresh-pursuances" class="adjust-pursuances adjust-pursuances-center">Again</span>
-        <span id="add-pursuance" class="adjust-pursuances">More</span>
+        <span id="subtract-pursuance" class="adjust-pursuances header">Less</span>
+        <span id="refresh-pursuances" class="adjust-pursuances adjust-pursuances-center header">Again</span>
+        <span id="add-pursuance" class="adjust-pursuances header">More</span>
       </div>
       <div id="pursuance-text-container">
         <div id="main-pursuance-text-box" class="pursuance-text-box">
-          <h1 class="pursuance-header">The Free Insulin Project</h1>
+          <h1 class="pursuance-header header">The Free Insulin Project</h1>
           <p class="pursuance-text">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
             aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
@@ -26,7 +27,7 @@
           </p>
         </div>
         <div id="related-pursuance-text-box" class="pursuance-text-box">
-          <h1 class="pursuance-header">Oakland Biohackers</h1>
+          <h1 class="pursuance-header header">Oakland Biohackers</h1>
           <h3 class="relationship-text">Relationship: Service Provider</h2>
           <p class="pursuance-text">
             <span>
@@ -75,12 +76,15 @@
   body {
     color: #090909;
     background-color: #DCDCDC;
-    font-family: sans-serif;
+    font-family: 'Roboto', sans-serif;
     padding-left: 50px;
     padding-right: 50px;
   }
   .body-text {
     line-height: 1.4em;
+  }
+  .header {
+    font-family: 'Roboto Condensed', sans-serif;
   }
   #input-container {
     width: 20%;
