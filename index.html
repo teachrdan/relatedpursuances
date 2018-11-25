@@ -11,10 +11,12 @@
 <body>
   <div id="container" style="width: 100%; height: 100vh;">
     <div id="input-container" style="height: 100vh; float: left;">
-      <div id="adjust-pursuances-container" class="no-select">
-        <span id="subtract-pursuance" class="adjust-pursuances header">Less</span>
-        <span id="refresh-pursuances" class="adjust-pursuances adjust-pursuances-center header">Again</span>
-        <span id="add-pursuance" class="adjust-pursuances header">More</span>
+      <label for="num-pursuances" style="display: inline-block; width: 240px; text-align: right">
+        Number of Pursuances = <span id="num-pursuances-value">3</span> <!-- starting num must be hardcoded -->
+      </label>
+      <input type="range" min="1" max="13" value="3" id="num-pursuances">
+      <div id="placeholder-text" class="header">
+        <h2>Hover over Pursuances to see relationship data.</h2>
       </div>
       <div id="pursuance-text-container">
         <div id="main-pursuance-text-box" class="pursuance-text-box">
@@ -126,6 +128,12 @@
   }
   .node text {
     font: 12px sans-serif;
+  }
+  #placeholder-text {
+    display: none;
+    margin-top: 100px;
+    opacity: 0.75;
+    text-align: center;
   }
   #pursuance-text-container {
     margin-top: 30px;
