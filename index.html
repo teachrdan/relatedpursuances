@@ -12,9 +12,9 @@
   <div id="container" style="width: 100%; height: 100vh;">
     <div id="input-container" style="height: 100vh; float: left;">
       <label for="num-pursuances" style="display: inline-block; width: 240px; text-align: right">
-        Number of Pursuances = <span id="num-pursuances-value">3</span> <!-- starting num must be hardcoded -->
+        Slide to change # Pursuances: <span id="num-pursuances-value">3</span> <!-- starting num must be hardcoded -->
       </label>
-      <input type="range" min="1" max="13" value="3" id="num-pursuances">
+      <input type="range" min="1" max="13" value="3" id="num-pursuances"> <!-- min and max # pursuances hardcoded -->
       <div id="placeholder-text" class="header">
         <h2>Hover over Pursuances to see relationship data.</h2>
       </div>
@@ -106,8 +106,8 @@
     font-family: helvetica;
   }
   #legend {
-    bottom: 25px;
-    right: 25px;
+    bottom: 50px;
+    right: 0px;
     position: absolute;
   }
   #legend-svg {

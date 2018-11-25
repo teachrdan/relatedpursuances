@@ -4,8 +4,9 @@
   "description": "beta view of related pursuances",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "budo index.js --live"
+    "dev": "budo index.js --live",
+    "lint": "standard ./index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
