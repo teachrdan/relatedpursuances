@@ -165,7 +165,6 @@ const draw = function (num, total) {
   // magic numbers
   const delay = 100
   const duration = 500
-  const haloMultiplier = (mainPursuance) ? 1.1 : 1.2
   const maxUsers = 30
 
   let numUsers = (mainPursuance) ? maxUsers : Math.random() * maxUsers
@@ -204,9 +203,10 @@ const draw = function (num, total) {
     .attr('transform', `translate(${x}, ${y})`)
 
   const makeHaloAndEventCatcher = function (options) {
+    const haloMultiplier = (mainPursuance) ? 1.1 : 1.2
     const pursuanceName = pursuanceNames[num]
-    let { x, y, radius, idName } = options
-    radius = radius * haloMultiplier
+    let { x, y, idName } = options
+    const radius = options.radius * haloMultiplier
     const textX = (mainPursuance) ? x - pursuanceName.length * 9 : x - pursuanceName.length * 4.25
     const textY = y + radius
 
