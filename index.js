@@ -159,6 +159,9 @@ const drawPursuances = function () {
 }
 
 const draw = function (num, total) {
+  // generic variable names
+  let radius = 0
+
   const mainPursuance = (num === 0)
   const className = (mainPursuance) ? 'main-pursuance' : `related-pursuance related-pursuance-${num}`
 
@@ -185,18 +188,10 @@ const draw = function (num, total) {
     .radius(pursuanceRadius)
 
   // calculate starting position for main and related pursuances
-  let x = 0
-  let y = 0
-  if (mainPursuance) {
-    x = middleX
-    y = middleY
-  } else {
-    // calculate an even distance between related pursuances
-    const distance = Math.PI * (2 * outerGuideCircleRadius) * num / total
-    const coordinates = document.getElementById('outer-guide-circle').getPointAtLength(distance)
-    x = coordinates.x
-    y = coordinates.y
-  }
+  let distance = Math.PI * (2 * outerGuideCircleRadius) * num / total
+  let coordinates = document.getElementById('outer-guide-circle').getPointAtLength(distance)
+  let x = (mainPursuance) ? middleX : coordinates.x
+  let y = (mainPursuance) ? middleY : coordinates.y
 
   let pursuanceContainer = svg.append('g')
     .attr('id', (mainPursuance) ? 'main-pursuance-container' : 'related-pursuance-container')
@@ -212,7 +207,7 @@ const draw = function (num, total) {
     const hasLongName = pursuanceName.length > longName
     const fontSize = (mainPursuance && hasLongName) ? 25 : (mainPursuance) ? 30 : (hasLongName) ? 12 : 15
     const offsetMultiplier = (mainPursuance && hasLongName) ? 8 : (mainPursuance) ? 7
-      : (hasLongName) ? 3.5 : 4.25
+      : (hasLongName) ? 3.5 : 4.5
     const radius = options.radius * haloMultiplier
     const textX = x - pursuanceName.length * offsetMultiplier
     const textY = y + radius
@@ -223,7 +218,6 @@ const draw = function (num, total) {
       .attr('cx', x)
       .attr('cy', y)
       .datum({ pursuanceName, x, y })
-      .attr('fill', 'yellow')
       .attr('opacity', 0)
       .attr('r', radius)
 
@@ -238,31 +232,21 @@ const draw = function (num, total) {
       .style('font-size', fontSize)
   }
 
-  let radius = 0
-  if (mainPursuance) {
-    pursuanceContainer
-      .transition()
-      .delay(delay)
-      .duration(duration)
-      .ease(d3.easeCubicOut)
-      .attr('transform', `translate(${middleX}, ${middleY}) scale(0.5)`)
+  radius = (mainPursuance) ? workingRadius / 1.9 : workingRadius / 3
+  let idName = (mainPursuance) ? 'main-pursuance-event-catcher' : 'related-pursuance-event-catcher'
+  let scale = (mainPursuance) ? 0.5 : 0.3
+  distance = Math.PI * (2 * innerGuideCircleRadius) * num / total
+  coordinates = document.getElementById('inner-guide-circle').getPointAtLength(distance)
+  x = (mainPursuance) ? x : coordinates.x
+  y = (mainPursuance) ? y : coordinates.y
 
-    radius = workingRadius / 1.9
-    makeHaloAndEventCatcher({ x: middleX, y: middleY, radius, idName: 'main-pursuance-event-catcher' })
-  } else {
-    // calculate an even distance between pursuances
-    const distance = Math.PI * (2 * innerGuideCircleRadius) * num / total
-    const { x, y } = document.getElementById('inner-guide-circle').getPointAtLength(distance)
-    pursuanceContainer
-      .transition()
-      .delay(delay)
-      .duration(duration)
-      .ease(d3.easeCubicOut)
-      .attr('transform', `translate(${x}, ${y}) scale(0.3)`)
-      .attr('opacity', 1)
-    radius = workingRadius * 0.3
-    makeHaloAndEventCatcher({ x, y, radius: radius, idName: 'related-pursuance-event-catcher' })
-  }
+  makeHaloAndEventCatcher({ x, y, radius, idName })
+  pursuanceContainer
+    .transition()
+    .delay(delay)
+    .duration(duration)
+    .ease(d3.easeCubicOut)
+    .attr('transform', `translate(${x}, ${y}) scale(${scale})`)
 
   let path = pursuanceContainer.append('path')
     .datum(points)
@@ -325,34 +309,6 @@ const draw = function (num, total) {
       .attr('y', posOnLine.y + 5)
       .style('pointer-events', 'none')
       .style('font-size', fontSize)
-
-    // show the name of each user
-    // pursuanceContainer.append('text')
-    //   .attr('class', 'user-text')
-    //   .attr('opacity', () => (mainPursuance) ? 1 : 0)
-    //   .text(user.firstName)
-    //   .attr('fill', user.daysOld < 25 ? '#3c963c' : '#828282')
-    //   .attr('x', numberX - nodeRadius)
-    //   .attr('y', posOnLine.y + nodeRadius + 16)
-
-    // pursuanceContainer.append('text')
-    //   .attr('class', 'user-text')
-    //   .attr('opacity', () => (mainPursuance) ? 1 : 0)
-    //   .text(user.lastName)
-    //   .attr('fill', user.daysOld < 25 ? '#3c963c' : '#828282')
-    //   .attr('x', numberX - nodeRadius)
-    //   .attr('y', posOnLine.y + nodeRadius + 32)
-
-    // TODO fix this
-    // TODO align text to anything
-    // TODO make font weight lighter
-    // pursuanceContainer.append('text')
-    //   .text('Pursuance Name')
-    //   .attr('font-family', 'sans-serif')
-    //   .attr('font-weight', 200)
-    //   .attr('x', -r / 2)
-    //   .attr('y', r + 40)
-    //   .attr('font-size', 40)
   }
 }
 
