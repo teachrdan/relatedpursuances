@@ -169,6 +169,8 @@ const draw = function (num, total) {
   const delay = 100
   const duration = 500
   const maxUsers = 30
+  const scaleMainPursuance = 0.5
+  const scaleRelatedPursuance = 0.3
 
   let numUsers = (mainPursuance) ? maxUsers : Math.random() * maxUsers
   numUsers = (numUsers > 10) ? numUsers : 10
@@ -232,9 +234,9 @@ const draw = function (num, total) {
       .style('font-size', fontSize)
   }
 
-  radius = (mainPursuance) ? workingRadius / 1.9 : workingRadius / 3
+  radius = (mainPursuance) ? workingRadius * scaleMainPursuance : workingRadius * (scaleRelatedPursuance)
   let idName = (mainPursuance) ? 'main-pursuance-event-catcher' : 'related-pursuance-event-catcher'
-  let scale = (mainPursuance) ? 0.5 : 0.3
+  let scale = (mainPursuance) ? scaleMainPursuance : scaleRelatedPursuance
   distance = Math.PI * (2 * innerGuideCircleRadius) * num / total
   coordinates = document.getElementById('inner-guide-circle').getPointAtLength(distance)
   x = (mainPursuance) ? x : coordinates.x
@@ -276,7 +278,6 @@ const draw = function (num, total) {
     const user = shownUsers[i]
     user.fill = user.isAdmin ? 'red' : 'steelblue'
     let nodeRadius = (mainPursuance) ? 25 : 20
-
     const isRelated = (mainPursuance || Math.random() < chanceRelated)
     pursuanceContainer.append('circle')
       .attr('class', `node ${className} removable`)
